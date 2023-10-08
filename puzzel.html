@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-gap: 5px;
+            margin: 20px auto;
+        }
+
+        .cell {
+            width: 100px;
+            height: 100px;
+            font-size: 24px;
+            text-align: center;
+            vertical-align: middle;
+            border: 1px solid #ccc;
+            cursor: pointer;
+        }
+
+        .cell:hover {
+            background-color: #f0f0f0;
+        }
+
+        .message {
+            margin-top: 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tic-Tac-Toe</h1>
+    <div class="message"></div>
+    <div class="board" id="board">
+        <!-- Create the game board cells using JavaScript -->
+    </div>
+    <script>
+        const board = document.getElementById('board');
+        const message = document.querySelector('.message');
+        let currentPlayer = 'X';
+        let boardArray = ['', '', '', '', '', '', '', '', ''];
+        let gameActive = true;
+
+        // Create the game board cells
+        for (let i = 0; i < 9; i++) {
+            const cell = document.createElement('div');
+            cell.classList.add('cell');
+            cell.setAttribute('data-cell-index', i);
+            cell.addEventListener('click', handleCellClick);
+            board.appendChild(cell);
+        }
+
+        // Handle cell click event
+        function handleCellClick(event) {
+            const cell = event.target;
+            const cellIndex = cell.getAttribute('data-cell-index');
+
+            if (boardArray[cellIndex] === '' && gameActive) {
+                cell.textContent = currentPlayer;
+                boardArray[cellIndex] = currentPlayer;
+                checkWinner();
+                togglePlayer();
+            }
+        }
+
+        // Toggle between X and O
+        function togglePlayer() {
+            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+        }
+
+        // Check for a winner or a draw
+        function checkWinner() {
+            const winningCombos = [
+                [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+                [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+                [0, 4, 8], [2, 4, 6] // Diagonals
+            ];
+
+            for (const combo of winningCombos) {
+                const [a, b, c] = combo;
+                if (boardArray[a] && boardArray[a] === boardArray[b] && boardArray[a] === boardArray[c]) {
+                    gameActive = false;
+                    message.textContent = `${currentPlayer} wins!`;
+                }
+            }
+
+            if (!boardArray.includes('') && gameActive) {
+                gameActive = false;
+                message.textContent = "It's a draw!";
+            }
+        }
+    </script>
+</body>
+</html>
